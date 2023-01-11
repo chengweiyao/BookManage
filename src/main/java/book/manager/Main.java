@@ -24,6 +24,12 @@ public class Main {
                 System.out.println("*************");
                 System.out.println("1.录入学生信息");
                 System.out.println("2.录入书籍信息");
+                System.out.println("3.添加借阅信息");
+                System.out.println("4.查询借阅信息");
+                System.out.println("3.添加借阅信息");
+                System.out.println("4.查询借阅信息");
+                System.out.println("5.查询学生信息");
+                System.out.println("6.查询书籍信息");
                 System.out.println("输入您想要执行的操作,按其他任意键退出");
                 int input;
                 try{
@@ -39,6 +45,18 @@ public class Main {
                     case 2:
                         addBook(scanner);
                         break;
+                    case 3:
+                        addBorrow(scanner);
+                        break;
+                    case 4:
+                        showBorrow();
+                        break;
+                    case 5:
+                        showStudent();
+                        break;
+                    case 6:
+                        showBook();
+                        break;
                     default:
                         return;
                 }
@@ -46,7 +64,51 @@ public class Main {
         }
     }
 
+    public static void showBook(){
+        SqlUtil.doSqlWork(bookMapper -> {
+            bookMapper.getBookList().forEach(System.out::println);
+        });
+    }
 
+
+    public static void showStudent(){
+        SqlUtil.doSqlWork(bookMapper -> {
+            bookMapper.getStudentList().forEach(System.out::println);
+        });
+    }
+
+
+    private static void showBorrow(){
+        SqlUtil.doSqlWork(bookMapper -> {
+            bookMapper.getBorrowList().forEach(borrow->{
+                System.out.println(borrow.getStudent().getName()+"->"+borrow.getBook().getTitle());
+            });
+        });
+    }
+
+
+
+
+
+
+
+    /*添加借阅信息*/
+    private static void addBorrow(Scanner scanner){
+        System.out.println("请输入学生号");
+        int sid = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("请输入书籍号");
+        int bid = scanner.nextInt();
+        scanner.nextLine();
+
+        SqlUtil.doSqlWork(bookMapper -> {
+            bookMapper.addBorrow(sid,bid);
+        });
+
+    }
+
+    /*添加书籍信息*/
     private static void addBook(Scanner scanner){
         System.out.println("请输入书籍标题:");
         String title = scanner.nextLine();
@@ -65,6 +127,7 @@ public class Main {
         });
     }
 
+    /*添加学生信息*/
     private static void addStudent(Scanner scanner){
         System.out.println("请输入学生名字");
         String name = scanner.nextLine();
